@@ -1,0 +1,9 @@
+[
+  {"value" : "main_news", "label" : "주요뉴스"},
+  {"value" : "investigative_reports", "label" : "탐사보도"},
+  {"value" : "case_plus", "label" : "사건플러스"},
+  {"value" : "whip", "label" : "휙"},
+  {"value" : "startup", "label" : "스타트업"},
+  {"value" : "issue_spreader", "label" : "이슈전파사"},
+  {"value" : "recovery", "label" : "회복"}
+]
