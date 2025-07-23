@@ -1,17 +1,26 @@
-import { useState } from "react";
+import { createContext, useContext } from "react";
+import type { MenuListContextProps } from "../types/menuListType";
 
-export function useStorage(key: string){
-  // 1. 초기값 설명, 스토리지에 가지고 있는 데이터가 없으면 주요뉴스를 기본값으로 보여줌
-  const [storage, setStorage] = useState(() => {
-    const value = localStorage.getItem(key);
-    return value ? JSON.parse(value) : [{"value" : "main_news", "label" : "주요뉴스"}];
-  });
+export const MenuListContext = createContext<MenuListContextProps>({
+  storage: [{ value: "main_news", label: "주요뉴스" }],
+  setStorage: () => {},
+}); 
 
-  // 2. 스토리지에 데이터를 저장하는 함수
-  const setVale = (value: any) => {
-    setStorage(value);
-    localStorage.setItem(key, JSON.stringify(value));
-  }
+export const useStorage = (key: string) => {
+  const { storage, setStorage } = useContext(MenuListContext);
 
-  return { storage, setVale };
-}
+  const setSelectedMenu = (selectData: { value: string; label: string }) => {
+    if (storage.some((item) => item.value === selectData.value)) {
+      const newStorage = storage.filter((item) => item.value !== selectData.value);
+      setStorage(newStorage);
+      localStorage.setItem(key, JSON.stringify(newStorage));
+      return;
+    }
+
+    const newStorage = [...storage, selectData];
+    setStorage(newStorage);
+    localStorage.setItem(key, JSON.stringify(newStorage));
+  };
+
+  return { storage, setSelectedMenu };
+};
