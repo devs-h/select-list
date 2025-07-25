@@ -7,15 +7,17 @@ function SelectMenuList() {
   return (
     <div className="select-menu-list">
       <ul className="select-menu-list-container">
-        {lists.map((list) => (
-          <li key={list.value}>
-            <button type="button"
+        {lists.map((list) => {
+          const selectedMenu = JSON.parse(localStorage.getItem("menuList") || "[]");
+          const isSelected = selectedMenu.some((menu: { value: string; label: string }) => menu.value === list.value);
+          return (<li key={list.value}>
+            <button type="button" className={isSelected ? 'active' : ''}
               onClick={() => setSelectedMenu({ value: list.value, label: list.label })}
               >
               {list.label}
             </button>
-          </li>
-        ))}
+          </li>);
+        })}
       </ul>
     </div>
   );

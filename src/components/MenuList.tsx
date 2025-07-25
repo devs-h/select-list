@@ -1,8 +1,9 @@
 import { useContext } from "react";
-import { MenuListContext } from "../hooks/useStorage";
+import { MenuListContext, useStorage } from "../hooks/useStorage";
 
 function MenuList() {
   const { storage } = useContext(MenuListContext);
+  const { setSelectedMenu } = useStorage("menuList");
   
   // 메뉴 리스트 최소 5개 칸 생성
   const itemsToRender = [
@@ -13,7 +14,11 @@ function MenuList() {
   return (
     <ul className="menu-list">
       {itemsToRender.map((menu) => (
-        <li key={menu.value}>{menu.label}</li>
+        <li key={menu.value} onClick={() => {
+          if (menu.label) {
+            setSelectedMenu({ value: menu.value, label: menu.label });
+          }
+        }}>{menu.label}</li>
       ))}
     </ul>
   );
