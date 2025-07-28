@@ -15,28 +15,70 @@ a{
 
 .menu-list-container-header{
   display: flex;
-  width: 100%;
+  padding: 12px;
   align-items: center;
   justify-content: flex-end;
+
+  .button-config {
+    position: relative;
+    width: 40px;
+    height: 40px;
+    text-indent: -9999px;
+    background-color: transparent;
+    border: 0;
+    background-color: #eaeaea;
+    border-radius: 50%;
+
+    &::after {
+      content: '⚙️';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      text-indent: 0;
+      font-size: 24px;
+      transform: translate(-50%, -50%);
+    }
+
+  }
 }
 
 .menu-list{
   display: flex;
-  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  align-items: stretch;
   justify-content: center;
 }
 
 .menu-list li{
-  width: calc(100% / 5);
-  height: 30px;
-  line-height: 28px;
+  flex: 1;
+  height: 48px;
+  line-height: 48px;
   text-align: center;
+  font-weight: 600;
   border: 1px solid #999;
+  border-radius: 12px;
+
+  &:empty {
+    &::before {
+      content: 'empty';
+      color: #999;
+    }
+  }
+  &.strike {
+    background-color: #84ff84;
+  }
+
+  &.ball {
+    background-color: #a3a3ff;
+  }
 }
 
 .select-menu-list{
-  padding:20px;
+  margin: 12px;
+  padding: 20px;
   background-color: #f0f0f0;
+  border-radius: 12px;
 }
 
 .select-menu-list ul{
@@ -54,6 +96,14 @@ a{
   text-align: center;
 }
 
-.select-menu-list ul li button.active{
-  background-color: #ff0000;
+.select-menu-list ul li button {
+  width: 100%;
+  height: 100%;
+  background-color: transparent;
+  border: 0;
+
+  &.active{
+    color: #fff;
+    background-color: #ff0000;
+  }
 }

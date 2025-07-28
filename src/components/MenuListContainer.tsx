@@ -2,7 +2,7 @@ import { useState } from 'react';
 import MenuList from './MenuList';
 import SelectMenuList from './SelectMenuList';
 import { MenuListProvider } from '../store/MenuListContext';
-    
+
 function MenuListContainer() {
   const [isShowSelectMenuList, setIsShowSelectMenuList] = useState(false);
 
@@ -13,6 +13,7 @@ function MenuListContainer() {
             {/* 설정 버튼 - 전체 리스트 Show/Hide */}
           <button
             type="button"
+            className="button-config"
             onClick={() => setIsShowSelectMenuList(!isShowSelectMenuList)}
             >
             설정
