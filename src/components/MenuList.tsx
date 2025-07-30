@@ -12,7 +12,9 @@ function MenuList({
 }) {
   const { storage } = useContext(MenuListContext);
   const { setSelectedMenu } = useStorage("menuList");
-  const { matchingTargets } = useMatchingTargets({ length: 5 });
+  const { matchingTargets, setRandomFromIndex } = useMatchingTargets({
+    length: 5,
+  });
 
   // 메뉴 리스트 최소 5개 칸 생성
   const itemsToRender = [
@@ -36,6 +38,27 @@ function MenuList({
   });
 
   useEffect(() => {
+    const getConsecutiveStrikeIndex = (
+      items: Storage[],
+      targets: Storage[]
+    ): number => {
+      for (let i = 0; i < items.length; i++) {
+        if (items[i].value !== targets[i]?.value) {
+          return i;
+        }
+      }
+      return items.length; // 전부 맞은 경우
+    };
+    const interval = setInterval(() => {
+      const inputCnt = JSON.parse(localStorage.getItem("menuList") ?? "[]");
+      const index = getConsecutiveStrikeIndex(itemsToRender, matchingTargets);
+      if (index === itemsToRender.length) return;
+      setRandomFromIndex(Math.max(index, inputCnt.length));
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [setRandomFromIndex, itemsToRender, matchingTargets]);
+  useEffect(() => {
     if (isAllStrike) {
       setIsAllStrike(true);
     }
@@ -46,7 +69,10 @@ function MenuList({
 
   return (
     <>
-      <ul className='menu-list'>
+      <span style={{ position: "absolute", top: "10px", left: "10px" }}>
+        {matchingTargets.map((item) => item.label).join(", ")}
+      </span>
+      <ul className="menu-list">
         {itemsToRender.map((menu, index) => (
           <li
             key={menu.value}
@@ -59,7 +85,8 @@ function MenuList({
               if (menu.label) {
                 setSelectedMenu({ value: menu.value, label: menu.label });
               }
-            }}>
+            }}
+          >
             {menu.label}
           </li>
         ))}
