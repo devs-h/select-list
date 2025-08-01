@@ -1,6 +1,5 @@
-import { useEffect, useState } from "react";
-import lists from "../assets/lists.json";
-import { useStorage } from "../hooks/useStorage";
+import { useContext, useEffect, useState } from "react";
+import { MenuListContext, useStorage } from "../hooks/useStorage";
 
 function SelectMenuList({
   isShowSelectMenuList,
@@ -9,7 +8,8 @@ function SelectMenuList({
   isShowSelectMenuList: boolean;
   isAllStrike: boolean;
 }) {
-  const { setSelectedMenu } = useStorage("menuList");
+  const { storage } = useContext(MenuListContext);
+  const { setSelectedMenu, setQuestionList } = useStorage("menuList");
 
   const [counter, setCounter] = useState(0);
 
@@ -17,6 +17,7 @@ function SelectMenuList({
     if (isShowSelectMenuList) {
       if (isAllStrike) {
         setCounter(0);
+        setQuestionList(storage.questionList);
         return;
       }
 
@@ -26,9 +27,9 @@ function SelectMenuList({
 
       return () => clearInterval(interval);
     }
-  }, [isShowSelectMenuList, isAllStrike]);
+  }, [isShowSelectMenuList, isAllStrike, storage.questionList, setQuestionList]);
 
-  const sortedRandomList = lists.sort(() => {
+  const sortedRandomList = storage.questionList.sort(() => {
     if (counter === 0) {
       return Math.random() - 0.5;
     }
@@ -38,12 +39,23 @@ function SelectMenuList({
   return (
     <div className='select-menu-list'>
       <ul className='select-menu-list-container'>
-        {sortedRandomList.map((list) => {
-          const selectedMenu = JSON.parse(
-            localStorage.getItem("menuList") || "[]",
+        {storage.questionList.map((list) => {
+          return (
+            <li key={list.value}>
+              <button
+                type='button'
+                onClick={() => {
+                  if (!isShowSelectMenuList) {
+                    return;
+                  }
+                  setSelectedMenu({ value: list.value });
+                }}>{counter === 0 ? list.value : "?"}</button>
+            </li>
           );
-          const isSelected = selectedMenu.some(
-            (menu: { value: string; label: string }) =>
+        })}
+        {/* {sortedRandomList.map((list) => {
+          const isSelected = storage.questionList.some(
+            (menu: { value: string }) =>
               menu.value === list.value,
           );
           return isSelected ? null : (
@@ -55,13 +67,13 @@ function SelectMenuList({
                   if (!isShowSelectMenuList) {
                     return;
                   }
-                  setSelectedMenu({ value: list.value, label: list.label });
+                  setSelectedMenu({ value: list.value });
                 }}>
-                {counter === 0 ? list.label : "?"}
+                {counter === 0 ? list.value : "?"}
               </button>
             </li>
           );
-        })}
+        })} */}
       </ul>
     </div>
   );

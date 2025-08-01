@@ -1,4 +1,4 @@
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useMemo } from "react";
 import { MenuListContext, useStorage } from "../hooks/useStorage";
 import { useMatchingTargets } from "../hooks/useMatchingTargets";
 import type { Storage } from "../types/menuListType";
@@ -13,17 +13,16 @@ function MenuList({
   const { storage } = useContext(MenuListContext);
   const { setSelectedMenu } = useStorage("menuList");
   const { matchingTargets, setRandomFromIndex } = useMatchingTargets({
-    length: 5,
+    length: storage.answerCount,
   });
 
   // 메뉴 리스트 최소 5개 칸 생성
-  const itemsToRender = [
-    ...storage,
-    ...Array.from({ length: Math.max(5 - storage.length, 0) }, (_, index) => ({
+  const itemsToRender = useMemo(() => [
+    ...storage.selectList,
+    ...Array.from({ length: Math.max(storage.answerCount - storage.selectList.length, 0) }, (_, index) => ({
       value: `empty-${index}`,
-      label: "",
     })),
-  ];
+  ], [storage.selectList, storage.answerCount]);
 
   const getMatchedItemClassName = (menu: Storage, index: number) => {
     const isStrike = matchingTargets[index]?.value === menu.value;
@@ -70,7 +69,7 @@ function MenuList({
   return (
     <>
       <span style={{ position: "absolute", top: "10px", left: "10px" }}>
-        {matchingTargets.map((item) => item.label).join(", ")}
+        {matchingTargets.map((item) => item.value).join(", ")}
       </span>
       <ul className="menu-list">
         {itemsToRender.map((menu, index) => (
@@ -82,12 +81,10 @@ function MenuList({
                 return;
               }
 
-              if (menu.label) {
-                setSelectedMenu({ value: menu.value, label: menu.label });
-              }
+              setSelectedMenu({ value: menu.value });
             }}
           >
-            {menu.label}
+            {menu.value}
           </li>
         ))}
       </ul>

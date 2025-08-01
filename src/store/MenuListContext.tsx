@@ -1,17 +1,30 @@
 import { useState } from "react";
 import type { ReactNode } from "react";
 import { MenuListContext } from "../hooks/useStorage";
-import type { Storage } from "../types/menuListType";
+import type { MenuData } from "../types/menuListType";
+import InputPopup from "../components/InputPopup";
 
 export const MenuListProvider = ({ children }: { children: ReactNode }) => {
-  const [storage, setStorage] = useState<Storage[]>(() => {
+  const [storage, setStorage] = useState<MenuData>(() => {
     const value = localStorage.getItem("menuList");
-    return value ? JSON.parse(value) : [{ value: "main_news", label: "주요뉴스" }];
+    return value ? JSON.parse(value) : {answerCount: 0, selectList: [], questionList: []};
   });
 
   return (
-    <MenuListContext.Provider value={{ storage, setStorage }}>
-      {children}
-    </MenuListContext.Provider>
+    <>
+      {storage.answerCount === 0 ? (
+        <InputPopup setStorage={setStorage} />
+      ) : (
+        <MenuListContext.Provider value={{ storage, setStorage }}>
+          <div className="test-code">
+            <hr />
+            <p>정답 갯수: {storage.answerCount}</p>
+            <p>문제 리스트: {storage.questionList.map((item) => item.value)}</p>
+            <hr />
+          </div>
+          {children}
+        </MenuListContext.Provider>
+      )}
+    </>
   );
 };

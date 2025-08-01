@@ -1,9 +1,14 @@
 export interface Storage {
   value: string;
-  label: string;
+}
+
+export interface MenuData {
+  answerCount: number;
+  selectList: Storage[];
+  questionList: Storage[];
 }
 
 export interface MenuListContextProps {
-  storage: Storage[];
-  setStorage: React.Dispatch<React.SetStateAction<Storage[]>>;
-}
+  storage: MenuData;
+  setStorage: React.Dispatch<React.SetStateAction<MenuData>>;
+}   
