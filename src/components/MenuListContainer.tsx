@@ -14,6 +14,14 @@ function MenuListContainer() {
       {isAllStrike && <Confetti />}
       <div className='menu-list-container'>
         <div className='menu-list-container-header'>
+          <button
+            type='button'
+            className='button-reset'
+            onClick={() => {
+              localStorage.removeItem("menuList");
+            }}>
+            초기화
+          </button>
           {/* 설정 버튼 - 전체 리스트 Show/Hide */}
           <button
             type='button'

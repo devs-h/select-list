@@ -7,7 +7,13 @@ import InputPopup from "../components/InputPopup";
 export const MenuListProvider = ({ children }: { children: ReactNode }) => {
   const [storage, setStorage] = useState<MenuData>(() => {
     const value = localStorage.getItem("menuList");
-    return value ? JSON.parse(value) : {answerCount: 0, selectList: [], questionList: []};
+    if (value) {
+      const parsedValue = JSON.parse(value);
+      if (Array.isArray(parsedValue?.questionList)) {
+        return parsedValue;
+      }
+    }
+    return { answerCount: 0, selectList: [], questionList: [] };
   });
 
   return (
