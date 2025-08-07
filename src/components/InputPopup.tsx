@@ -1,7 +1,9 @@
 import { useState } from "react";
-import type { MenuData } from "../types/menuListType";
+import { useStorage } from "../hooks/useStorage";
+import type { IItem } from "../types/menuListType";
 
-const InputList = ({ setStorage }: { setStorage: (storage: MenuData) => void }) => {  
+const InputList = () => {
+  const { setStorage } = useStorage("menuList");
   const [questionList, setQuestionList] = useState<string[]>([]);
   const [slotCount, setSlotCount] = useState(1);
 
@@ -10,7 +12,7 @@ const InputList = ({ setStorage }: { setStorage: (storage: MenuData) => void }) 
       alert("정답 갯수는 최대 10개입니다.");
       return false;
     }
-    
+
     if(slotCount <= 0) {
       alert("정답 갯수는 최소 1개 이상 작성해주세요.");
       return false;
@@ -31,9 +33,17 @@ const InputList = ({ setStorage }: { setStorage: (storage: MenuData) => void }) 
 
   const handleAdd = () => {
     if(checkValidation()) {
-      const questionListData = questionList.map((item: string) => ({ value: item }));
-      setStorage({answerCount: Number(slotCount), questionList: questionListData, selectList: []});  
-      localStorage.setItem("menuList", JSON.stringify({answerCount: Number(slotCount), questionList: questionListData, selectList: []}));
+      const questionListData = questionList.map((item: string) => ({
+        value: item,
+        matched: false,
+      } as IItem));
+
+      setStorage({
+        answerCount: Number(slotCount),
+        questionList: questionListData,
+        selectList: [],
+        matchingTargets: []
+      });
     }
   }
 
@@ -53,7 +63,7 @@ const InputList = ({ setStorage }: { setStorage: (storage: MenuData) => void }) 
           {Array.from({ length: slotCount }, (_, index) => (
             <input
               id={`question-list-${index}`}
-              key={index} 
+              key={index}
               type="text"
               value={questionList[index] || ''}
               onChange={(e) => {

@@ -1,7 +1,8 @@
-import { useContext, useEffect, useMemo } from "react";
-import { MenuListContext, useStorage } from "../hooks/useStorage";
+import { useEffect } from "react";
+import { useStorage } from "../hooks/useStorage";
 import { useMatchingTargets } from "../hooks/useMatchingTargets";
-import type { Storage } from "../types/menuListType";
+import type { IItem } from "../types/menuListType";
+import { useLists } from "../hooks/useLists";
 
 function MenuList({
   isShowSelectMenuList,
@@ -10,53 +11,30 @@ function MenuList({
   isShowSelectMenuList: boolean;
   setIsAllStrike: (isAllStrike: boolean) => void;
 }) {
-  const { storage } = useContext(MenuListContext);
-  const { setSelectedMenu } = useStorage("menuList");
-  const { matchingTargets, setRandomFromIndex } = useMatchingTargets({
-    length: storage.answerCount,
-  });
+  const { storage } = useStorage("menuList");
+  const { setSelectedMenu } = useLists("menuList");
+  const { matchingTargets, setRestRandomTargets } = useMatchingTargets(storage.questionList);
 
-  // 메뉴 리스트 최소 5개 칸 생성
-  const itemsToRender = useMemo(() => [
-    ...storage.selectList,
-    ...Array.from({ length: Math.max(storage.answerCount - storage.selectList.length, 0) }, (_, index) => ({
-      value: `empty-${index}`,
-    })),
-  ], [storage.selectList, storage.answerCount]);
-
-  const getMatchedItemClassName = (menu: Storage, index: number) => {
+  const getMatchedItemClassName = (menu: IItem, index: number) => {
     const isStrike = matchingTargets[index]?.value === menu.value;
     const isBall = matchingTargets.some((item) => item.value === menu.value);
 
     return isStrike ? "strike" : isBall ? "ball" : "";
   };
 
-  const isAllStrike = itemsToRender.every((menu) => {
+  const isAllStrike = storage.selectList.every((menu) => {
     const isStrike = matchingTargets.some((item) => item.value === menu.value);
     return isStrike;
   });
 
   useEffect(() => {
-    const getConsecutiveStrikeIndex = (
-      items: Storage[],
-      targets: Storage[]
-    ): number => {
-      for (let i = 0; i < items.length; i++) {
-        if (items[i].value !== targets[i]?.value) {
-          return i;
-        }
-      }
-      return items.length; // 전부 맞은 경우
-    };
     const interval = setInterval(() => {
-      const inputCnt = JSON.parse(localStorage.getItem("menuList") ?? "[]");
-      const index = getConsecutiveStrikeIndex(itemsToRender, matchingTargets);
-      if (index === itemsToRender.length) return;
-      setRandomFromIndex(Math.max(index, inputCnt.length));
+      setRestRandomTargets(storage.selectList);
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [setRandomFromIndex, itemsToRender, matchingTargets]);
+  }, [setRestRandomTargets, storage.selectList, matchingTargets]);
+
   useEffect(() => {
     if (isAllStrike) {
       setIsAllStrike(true);
@@ -72,7 +50,7 @@ function MenuList({
         {matchingTargets.map((item) => item.value).join(", ")}
       </span>
       <ul className="menu-list">
-        {itemsToRender.map((menu, index) => (
+        {storage.selectList.map((menu, index) => (
           <li
             key={menu.value}
             className={getMatchedItemClassName(menu, index)}
@@ -81,7 +59,7 @@ function MenuList({
                 return;
               }
 
-              setSelectedMenu({ value: menu.value });
+              setSelectedMenu(menu);
             }}
           >
             {menu.value}

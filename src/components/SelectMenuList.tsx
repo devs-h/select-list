@@ -1,5 +1,5 @@
-import { useContext, useEffect, useState } from "react";
-import { MenuListContext, useStorage } from "../hooks/useStorage";
+import { useEffect, useState } from "react";
+import { useStorage } from "../hooks/useStorage";
 
 function SelectMenuList({
   isShowSelectMenuList,
@@ -8,8 +8,7 @@ function SelectMenuList({
   isShowSelectMenuList: boolean;
   isAllStrike: boolean;
 }) {
-  const { storage } = useContext(MenuListContext);
-  const { setSelectedMenu, setQuestionList } = useStorage("menuList");
+  const { storage, setStorage } = useStorage("menuList");
 
   const [counter, setCounter] = useState(0);
 
@@ -17,7 +16,10 @@ function SelectMenuList({
     if (isShowSelectMenuList) {
       if (isAllStrike) {
         setCounter(0);
-        setQuestionList(storage.questionList);
+        setStorage({
+          ...storage,
+          questionList: storage.questionList,
+        });
         return;
       }
 
@@ -27,14 +29,7 @@ function SelectMenuList({
 
       return () => clearInterval(interval);
     }
-  }, [isShowSelectMenuList, isAllStrike, storage.questionList, setQuestionList]);
-
-  const sortedRandomList = storage.questionList.sort(() => {
-    if (counter === 0) {
-      return Math.random() - 0.5;
-    }
-    return 0;
-  });
+  }, [isShowSelectMenuList, isAllStrike, setStorage]);
 
   return (
     <div className='select-menu-list'>
@@ -48,7 +43,10 @@ function SelectMenuList({
                   if (!isShowSelectMenuList) {
                     return;
                   }
-                  setSelectedMenu({ value: list.value });
+                  setStorage({
+                    ...storage,
+                    selectList: [...storage.selectList, list],
+                  });
                 }}>{counter === 0 ? list.value : "?"}</button>
             </li>
           );

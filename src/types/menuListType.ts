@@ -1,14 +1,16 @@
-export interface Storage {
+export interface IItem {
   value: string;
+  matched: boolean;
 }
 
-export interface MenuData {
+export interface IMenuData {
   answerCount: number;
-  selectList: Storage[];
-  questionList: Storage[];
+  selectList: IItem[];
+  questionList: IItem[];
+  matchingTargets: IItem[];
 }
 
-export interface MenuListContextProps {
-  storage: MenuData;
-  setStorage: React.Dispatch<React.SetStateAction<MenuData>>;
-}   
+export interface IMenuListContextProps {
+  data: IMenuData;
+  setData: React.Dispatch<React.SetStateAction<IMenuData>>;
+}

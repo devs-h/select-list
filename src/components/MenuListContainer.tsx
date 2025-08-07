@@ -1,16 +1,14 @@
 import { useState } from "react";
 import MenuList from "./MenuList";
 import SelectMenuList from "./SelectMenuList";
-import { MenuListProvider } from "../store/MenuListContext";
 import Confetti from "react-confetti";
 
 function MenuListContainer() {
   const [isShowSelectMenuList, setIsShowSelectMenuList] = useState(false);
-
   const [isAllStrike, setIsAllStrike] = useState(false);
 
   return (
-    <MenuListProvider>
+    <>
       {isAllStrike && <Confetti />}
       <div className='menu-list-container'>
         <div className='menu-list-container-header'>
@@ -45,7 +43,7 @@ function MenuListContainer() {
           />
         )}
       </div>
-    </MenuListProvider>
+    </>
   );
 }
 
