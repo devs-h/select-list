@@ -3,36 +3,26 @@ import { useStorage } from "../hooks/useStorage";
 
 function SelectMenuList({
   isShowSelectMenuList,
-  isAllStrike,
 }: {
   isShowSelectMenuList: boolean;
-  isAllStrike: boolean;
 }) {
-  const { storage, setStorage } = useStorage("menuList");
-
   const [counter, setCounter] = useState(0);
+  const { storage, setStorage, isAllStrike } = useStorage("menuList");
 
   useEffect(() => {
-    if (isShowSelectMenuList) {
-      if (isAllStrike) {
-        setCounter(0);
-        setStorage({
-          ...storage,
-          questionList: storage.questionList,
-        });
-        return;
-      }
-
+    if (isShowSelectMenuList && !isAllStrike) {
       const interval = setInterval(() => {
         setCounter((prev) => (prev + 1) % 5);
       }, 1000);
-
       return () => clearInterval(interval);
     }
-  }, [isShowSelectMenuList, isAllStrike, setStorage]);
+  }, [isShowSelectMenuList, isAllStrike, setCounter]);
+
+  // random sort removed ?
 
   return (
     <div className='select-menu-list'>
+      {counter}
       <ul className='select-menu-list-container'>
         {storage.questionList.map((list) => {
           return (
@@ -40,38 +30,23 @@ function SelectMenuList({
               <button
                 type='button'
                 onClick={() => {
-                  if (!isShowSelectMenuList) {
-                    return;
-                  }
+                  if (!isShowSelectMenuList) return;
+
+                  const isAlreadySelected = storage.selectedList.find(
+                    (item) => item.value === list.value,
+                  );
+                  if (isAlreadySelected) return;
+
                   setStorage({
                     ...storage,
-                    selectList: [...storage.selectList, list],
+                    selectedList: [...storage.selectedList, list],
                   });
-                }}>{counter === 0 ? list.value : "?"}</button>
-            </li>
-          );
-        })}
-        {/* {sortedRandomList.map((list) => {
-          const isSelected = storage.questionList.some(
-            (menu: { value: string }) =>
-              menu.value === list.value,
-          );
-          return isSelected ? null : (
-            <li key={list.value}>
-              <button
-                type='button'
-                className={isSelected ? "active" : ""}
-                onClick={() => {
-                  if (!isShowSelectMenuList) {
-                    return;
-                  }
-                  setSelectedMenu({ value: list.value });
                 }}>
                 {counter === 0 ? list.value : "?"}
               </button>
             </li>
           );
-        })} */}
+        })}
       </ul>
     </div>
   );

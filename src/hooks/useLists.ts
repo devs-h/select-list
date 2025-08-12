@@ -6,21 +6,25 @@ export const useLists = (key: string) => {
 
   const setSelectedMenu = (selectData: IItem) => {
     if (storage.questionList.some((item) => item.value === selectData.value)) {
-      const updatedQuestionList = storage.questionList.filter(item => item.value !== selectData.value);
-      const updatedSelectList = [...storage.selectList, selectData];
+      const updatedQuestionList = storage.questionList.filter(
+        (item) => item.value !== selectData.value,
+      );
+      const updatedSelectList = [...storage.selectedList, selectData];
 
       const newStorage = {
         ...storage,
         questionList: updatedQuestionList,
-        selectList: updatedSelectList,
+        selectedList: updatedSelectList,
       };
 
       setStorage(newStorage);
       return;
     }
 
-    if (storage.selectList.some((item) => item.value === selectData.value)) {
-      const updatedSelectList = storage.selectList.filter(item => item.value !== selectData.value);
+    if (storage.selectedList.some((item) => item.value === selectData.value)) {
+      const updatedSelectList = storage.selectedList.filter(
+        (item) => item.value !== selectData.value,
+      );
       const updatedQuestionList = [...storage.questionList, selectData];
 
       const newStorage = {
@@ -35,7 +39,7 @@ export const useLists = (key: string) => {
   };
 
   const setQuestionList = (questionList: IItem[]) => {
-    setStorage({...storage, questionList});
+    setStorage({ ...storage, questionList });
   };
 
   return { setSelectedMenu, setQuestionList };

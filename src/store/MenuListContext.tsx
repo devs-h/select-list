@@ -10,8 +10,8 @@ export const MenuListContext = createContext<IMenuListContextProps>({
         matched: false,
       },
     ],
-    selectList: [],
-    matchingTargets: [],
+    selectedList: [],
+    // matchingTargets: [],
   },
   setData: () => {},
 });

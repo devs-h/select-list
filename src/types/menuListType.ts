@@ -5,9 +5,10 @@ export interface IItem {
 
 export interface IMenuData {
   answerCount: number;
-  selectList: IItem[];
+  selectedList: IItem[];
   questionList: IItem[];
-  matchingTargets: IItem[];
+  answerList: IItem[];
+  // matchingTargets: IItem[];
 }
 
 export interface IMenuListContextProps {

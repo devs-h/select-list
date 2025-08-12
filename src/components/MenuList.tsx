@@ -1,67 +1,49 @@
 import { useEffect } from "react";
 import { useStorage } from "../hooks/useStorage";
-import { useMatchingTargets } from "../hooks/useMatchingTargets";
-import type { IItem } from "../types/menuListType";
-import { useLists } from "../hooks/useLists";
 
-function MenuList({
-  isShowSelectMenuList,
-  setIsAllStrike,
-}: {
-  isShowSelectMenuList: boolean;
-  setIsAllStrike: (isAllStrike: boolean) => void;
-}) {
-  const { storage } = useStorage("menuList");
-  const { setSelectedMenu } = useLists("menuList");
-  const { matchingTargets, setRestRandomTargets } = useMatchingTargets(storage.questionList);
+import type { IItem } from "../types/menuListType";
+
+function MenuList({ isShowSelectMenuList }: { isShowSelectMenuList: boolean }) {
+  const { storage, setStorage, isAllStrike, setRestRandomTargets } =
+    useStorage("menuList");
 
   const getMatchedItemClassName = (menu: IItem, index: number) => {
-    const isStrike = matchingTargets[index]?.value === menu.value;
-    const isBall = matchingTargets.some((item) => item.value === menu.value);
+    const isStrike = storage.answerList[index]?.value === menu.value;
+    const isBall = storage.answerList.some((item) => item.value === menu.value);
 
     return isStrike ? "strike" : isBall ? "ball" : "";
   };
 
-  const isAllStrike = storage.selectList.every((menu) => {
-    const isStrike = matchingTargets.some((item) => item.value === menu.value);
-    return isStrike;
-  });
-
   useEffect(() => {
+    if (isAllStrike) return;
+
     const interval = setInterval(() => {
-      setRestRandomTargets(storage.selectList);
+      setRestRandomTargets(storage.selectedList);
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [setRestRandomTargets, storage.selectList, matchingTargets]);
-
-  useEffect(() => {
-    if (isAllStrike) {
-      setIsAllStrike(true);
-    }
-    if (!isAllStrike) {
-      setIsAllStrike(false);
-    }
-  }, [isAllStrike, setIsAllStrike]);
+  }, [setRestRandomTargets, storage.selectedList, isAllStrike]);
 
   return (
     <>
       <span style={{ position: "absolute", top: "10px", left: "10px" }}>
-        {matchingTargets.map((item) => item.value).join(", ")}
+        {storage.answerList.map((item) => item.value).join(", ")}
       </span>
-      <ul className="menu-list">
-        {storage.selectList.map((menu, index) => (
+      <ul className='menu-list'>
+        {storage.selectedList.map((menu, index) => (
           <li
             key={menu.value}
             className={getMatchedItemClassName(menu, index)}
             onClick={() => {
-              if (!isShowSelectMenuList) {
-                return;
-              }
+              if (!isShowSelectMenuList) return;
 
-              setSelectedMenu(menu);
-            }}
-          >
+              setStorage({
+                ...storage,
+                selectedList: storage.selectedList.filter(
+                  (item) => item.value !== menu.value,
+                ),
+              });
+            }}>
             {menu.value}
           </li>
         ))}
