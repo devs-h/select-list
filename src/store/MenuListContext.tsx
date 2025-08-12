@@ -11,6 +11,7 @@ export const MenuListContext = createContext<IMenuListContextProps>({
       },
     ],
     selectedList: [],
+    answerList: [],
     // matchingTargets: [],
   },
   setData: () => {},
