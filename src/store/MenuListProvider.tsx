@@ -2,7 +2,7 @@ import { useMemo, type ReactNode } from "react";
 import type { IItem, IMenuData } from "../types/menuListType";
 import { MenuListContext } from "./MenuListContext";
 import { useStorage } from "../hooks/useStorage";
-import { STORAGE_KEY } from "../types/storage";
+import { STORAGE_KEY } from "../contants/storage";
 
 export const MenuListProvider = ({ children }: { children: ReactNode }) => {
   const {

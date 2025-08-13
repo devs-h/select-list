@@ -1,6 +1,7 @@
 import { useContext, useMemo, useState, type FormEvent } from "react";
 import type { IItem } from "../types/menuListType";
 import { MenuListContext } from "../store/MenuListContext";
+import { navigate } from "../utils/navigate";
 const checkValidation = (slotCount: number, questionList: string[]) => {
   const validations: { condition: boolean; message: string }[] = [
     { condition: slotCount > 10, message: "정답 갯수는 최대 10개입니다." },
@@ -29,7 +30,7 @@ const checkValidation = (slotCount: number, questionList: string[]) => {
 const clamp = (value: number, min: number, max: number) =>
   Math.min(Math.max(value, min), max);
 
-export function InputPopup() {
+export function MainPage() {
   const { setData } = useContext(MenuListContext);
   const [questionList, setQuestionList] = useState<string[]>([]);
   const [slotCount, setSlotCount] = useState(1);
@@ -54,6 +55,7 @@ export function InputPopup() {
       selectedList: [],
       answerList: questionListData.sort(() => Math.random() - 0.5),
     });
+    navigate("/menu");
   };
 
   // 슬롯 수 업데이트 유틸

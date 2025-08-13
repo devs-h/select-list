@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { initLocalForage } from "../utils/localforage.client";
 import localforage from "localforage";
-import type { STORAGE_KEY } from "../types/storage";
+import type { STORAGE_KEY } from "../contants/storage";
 
 export interface UseStorageOptions<T> {
   /** 초기 로드 시 값이 없으면 이 값으로 초기화 (optional) */

@@ -1,10 +1,9 @@
 import { useContext, useState } from "react";
-import MenuList from "./MenuList";
-import SelectMenuList from "./SelectMenuList";
 import Confetti from "react-confetti";
 import { MenuListContext } from "../store/MenuListContext";
-
-function MenuListContainer() {
+import { MenuList } from "../components/MenuList";
+import { SelectMenuList } from "../components/SelectMenuList";
+export function MenuPage() {
   const [isShowSelectMenuList, setIsShowSelectMenuList] = useState(false);
   const { isAllStrike, removeStorage } = useContext(MenuListContext);
 
@@ -44,5 +43,3 @@ function MenuListContainer() {
     </>
   );
 }
-
-export default MenuListContainer;

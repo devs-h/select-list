@@ -1,42 +1,20 @@
+// App.tsx
 import "../src/assets/App.css";
-import MenuListContainer from "./components/MenuListContainer";
-import { InputPopup } from "./components/InputPopup";
-import { MenuListProvider } from "./store/MenuListProvider";
-import { useContext } from "react";
-import { MenuListContext } from "./store/MenuListContext";
-import { useDebouncedValue } from "./hooks/useDebounced";
-
-function SelectMenuList() {
-  const { data, loading } = useContext(MenuListContext);
-  const debouncedLoading = useDebouncedValue(loading, 1000);
-  return (
-    <>
-      {data?.answerCount ? <MenuListContainer /> : <InputPopup />}
-      <div
-        style={{
-          position: "fixed",
-          inset: 0,
-          background: "#000",
-          opacity: debouncedLoading ? 1 : 0,
-          transition: "1s",
-          color: "#fff",
-          display: "flex",
-          alignItems: "center",
-          pointerEvents: "none",
-        }}
-      >
-        <span style={{ margin: "auto" }}>로딩중</span>
-      </div>
-    </>
-  );
-}
+import { MainPage } from "./pages/MainPage";
+import { MenuPage } from "./pages/MenuPage";
+import { useHashPath } from "./hooks/useHashPath";
+/** 라우트 테이블 */
 
 function App() {
-  return (
-    <MenuListProvider>
-      <SelectMenuList />
-    </MenuListProvider>
-  );
+  const path = useHashPath();
+  switch (path) {
+    case "/":
+      return <MainPage />;
+    case "/menu":
+      return <MenuPage />;
+    default:
+      return <div style={{ padding: 24 }}>404 Not Found: {path}</div>;
+  }
 }
 
 export default App;

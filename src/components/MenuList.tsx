@@ -3,7 +3,11 @@ import { useContext, useEffect } from "react";
 import type { IItem } from "../types/menuListType";
 import { MenuListContext } from "../store/MenuListContext";
 
-function MenuList({ isShowSelectMenuList }: { isShowSelectMenuList: boolean }) {
+export function MenuList({
+  isShowSelectMenuList,
+}: {
+  isShowSelectMenuList: boolean;
+}) {
   const { data, setData, setRestRandomTargets, isAllStrike } =
     useContext(MenuListContext);
 
@@ -52,5 +56,3 @@ function MenuList({ isShowSelectMenuList }: { isShowSelectMenuList: boolean }) {
     </>
   );
 }
-
-export default MenuList;

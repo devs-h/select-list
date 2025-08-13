@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import { MenuListContext } from "../store/MenuListContext";
 
-function SelectMenuList({
+export function SelectMenuList({
   isShowSelectMenuList,
 }: {
   isShowSelectMenuList: boolean;
@@ -52,5 +52,3 @@ function SelectMenuList({
     </div>
   );
 }
-
-export default SelectMenuList;
