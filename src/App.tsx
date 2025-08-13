@@ -1,18 +1,34 @@
-import '../src/assets/App.css'
-import MenuListContainer from './components/MenuListContainer'
-import { useStorage } from './hooks/useStorage';
-
-import InputPopup from './components/InputPopup';
-import { MenuListProvider } from './store/MenuListProvider';
+import "../src/assets/App.css";
+import MenuListContainer from "./components/MenuListContainer";
+import { InputPopup } from "./components/InputPopup";
+import { MenuListProvider } from "./store/MenuListProvider";
+import { useContext } from "react";
+import { MenuListContext } from "./store/MenuListContext";
+import { useDebouncedValue } from "./hooks/useDebounced";
 
 function SelectMenuList() {
-  const { storage } = useStorage("menuList");
-
+  const { data, loading } = useContext(MenuListContext);
+  const debouncedLoading = useDebouncedValue(loading, 1000);
   return (
     <>
-      {storage.answerCount === 0 ? <InputPopup /> : <MenuListContainer />}
+      {data?.answerCount ? <MenuListContainer /> : <InputPopup />}
+      <div
+        style={{
+          position: "fixed",
+          inset: 0,
+          background: "#000",
+          opacity: debouncedLoading ? 1 : 0,
+          transition: "1s",
+          color: "#fff",
+          display: "flex",
+          alignItems: "center",
+          pointerEvents: "none",
+        }}
+      >
+        <span style={{ margin: "auto" }}>로딩중</span>
+      </div>
     </>
-  )
+  );
 }
 
 function App() {
@@ -20,7 +36,7 @@ function App() {
     <MenuListProvider>
       <SelectMenuList />
     </MenuListProvider>
-  )
+  );
 }
 
-export default App
+export default App;

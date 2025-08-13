@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { useStorage } from "../hooks/useStorage";
+import { useContext, useEffect, useState } from "react";
+import { MenuListContext } from "../store/MenuListContext";
 
 function SelectMenuList({
   isShowSelectMenuList,
@@ -7,7 +7,7 @@ function SelectMenuList({
   isShowSelectMenuList: boolean;
 }) {
   const [counter, setCounter] = useState(0);
-  const { storage, setStorage, isAllStrike } = useStorage("menuList");
+  const { data, setData, isAllStrike } = useContext(MenuListContext);
 
   useEffect(() => {
     if (isShowSelectMenuList && !isAllStrike) {
@@ -21,27 +21,28 @@ function SelectMenuList({
   // random sort removed ?
 
   return (
-    <div className='select-menu-list'>
+    <div className="select-menu-list">
       {counter}
-      <ul className='select-menu-list-container'>
-        {storage.questionList.map((list) => {
+      <ul className="select-menu-list-container">
+        {data?.questionList.map((list) => {
           return (
             <li key={list.value}>
               <button
-                type='button'
+                type="button"
                 onClick={() => {
                   if (!isShowSelectMenuList) return;
 
-                  const isAlreadySelected = storage.selectedList.find(
-                    (item) => item.value === list.value,
+                  const isAlreadySelected = data?.selectedList.find(
+                    (item) => item.value === list.value
                   );
                   if (isAlreadySelected) return;
 
-                  setStorage({
-                    ...storage,
-                    selectedList: [...storage.selectedList, list],
+                  setData({
+                    ...data,
+                    selectedList: [...(data?.selectedList ?? []), list],
                   });
-                }}>
+                }}
+              >
                 {counter === 0 ? list.value : "?"}
               </button>
             </li>

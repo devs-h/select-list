@@ -12,6 +12,12 @@ export interface IMenuData {
 }
 
 export interface IMenuListContextProps {
-  data: IMenuData;
-  setData: React.Dispatch<React.SetStateAction<IMenuData>>;
+  isAllStrike?: boolean;
+  loading: boolean;
+  removeStorage: () => void;
+  setRestRandomTargets: (selectedItems: IItem[]) => void;
+  data?: IMenuData;
+  setData: (
+    next: IMenuData | ((prev: IMenuData | undefined) => IMenuData)
+  ) => Promise<unknown>;
 }

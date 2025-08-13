@@ -1,29 +1,31 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import MenuList from "./MenuList";
 import SelectMenuList from "./SelectMenuList";
-import { useStorage } from "../hooks/useStorage";
 import Confetti from "react-confetti";
+import { MenuListContext } from "../store/MenuListContext";
 
 function MenuListContainer() {
   const [isShowSelectMenuList, setIsShowSelectMenuList] = useState(false);
-  const { isAllStrike, resetStorage } = useStorage("menuList");
+  const { isAllStrike, removeStorage } = useContext(MenuListContext);
 
   return (
     <>
       {isAllStrike && <Confetti />}
-      <div className='menu-list-container'>
-        <div className='menu-list-container-header'>
+      <div className="menu-list-container">
+        <div className="menu-list-container-header">
           <button
-            type='button'
-            className='button-reset'
-            onClick={() => resetStorage()}>
+            type="button"
+            className="button-reset"
+            onClick={() => removeStorage()}
+          >
             초기화
           </button>
           {/* 설정 버튼 - 전체 리스트 Show/Hide */}
           <button
-            type='button'
-            className='button-config'
-            onClick={() => setIsShowSelectMenuList(!isShowSelectMenuList)}>
+            type="button"
+            className="button-config"
+            onClick={() => setIsShowSelectMenuList(!isShowSelectMenuList)}
+          >
             설정
           </button>
         </div>
